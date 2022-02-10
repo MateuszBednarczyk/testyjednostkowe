@@ -9,12 +9,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
 @SpringBootTest
-@ExtendWith(MockitoExtension.class)
 class IdkApplicationTests {
 
     private CustomerService customerService;
@@ -28,6 +30,7 @@ class IdkApplicationTests {
 
         Iterable<Customer> all = Arrays.asList(customer1,customer2);
         doReturn(all).when(customerRepository).findAll();
+        doReturn(all).when(customerRepository).findCustomerByCustomerName(anyString());
 
         customerService = new CustomerService(customerRepository);
 
@@ -38,7 +41,7 @@ class IdkApplicationTests {
     }
 
     @Test
-    public void shouldReturnCustomerList(){
+    public void shouldReturnCustomer(){
 
         List<Customer> actual = customerService.getCustomerList();
         Assertions.assertEquals(1,actual.get(0).getCustomerId());
@@ -46,4 +49,11 @@ class IdkApplicationTests {
 
     }
 
+    @Test
+    public void shouldReturnCustomerByName(){
+
+        List<Customer> actual = customerService.getCustomerListByName("Kasia");
+        System.out.println(actual);
+        Assertions.assertEquals("Kasia",actual.get(0).getCustomerName());
+    }
 }
